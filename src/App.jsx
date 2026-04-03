@@ -479,6 +479,7 @@ Requirements:
 - Provide context — explain WHY this matters to citizens of ${scope}
 - Use direct attribution ("According to...", "The commissioner stated...")
 - End with civic relevance — what citizens should know, do, or watch for
+- IMPORTANT: Wrap EACH paragraph in <p> tags for proper formatting. Example: <p>First paragraph here.</p><p>Second paragraph here.</p>
 - Today is ${today}`;
 
   const prompt = `Write a detailed forum article about this headline:
@@ -488,7 +489,7 @@ ${headline.summary ? "Summary: " + headline.summary : ""}
 
 Return ONLY a JSON object with:
 - "title": polished headline
-- "body": the full 3-5 paragraph article
+- "body": the full article with each paragraph wrapped in <p> tags (e.g. "<p>Paragraph one.</p><p>Paragraph two.</p>")
 - "source": "${headline.source || ""}"
 
 Return ONLY the JSON. No markdown fences, no preamble.`;
@@ -554,7 +555,7 @@ const CSS=`@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;
 .pcf{display:flex;align-items:center;gap:14px;margin-top:6px;font-size:11px;color:var(--txt3)}.pcf span{display:flex;align-items:center;gap:4px}.pcch{color:var(--txt3);font-size:14px;flex-shrink:0;align-self:center;margin-left:4px}
 .tb{display:flex;align-items:center;gap:6px;padding:12px 0;font-size:12px;font-weight:600;color:var(--txt2);cursor:pointer;min-height:44px}.tb:hover{color:var(--grn)}
 .tp{padding:16px 0;border-bottom:1px solid var(--bdr)}.tph{display:flex;align-items:center;gap:10px;margin-bottom:14px}.tpi{flex:1}.tpu{font-size:12px;font-weight:700;cursor:pointer}.tpu:hover{color:var(--grn)}.tpd{font-size:11px;color:var(--txt3);display:flex;align-items:center;gap:6px}
-.tpt{font-size:16px;font-weight:800;line-height:1.3;letter-spacing:-.02em;margin-bottom:8px}.tpbd{font-size:12px;line-height:1.65;color:var(--txt2)}
+.tpt{font-size:16px;font-weight:800;line-height:1.3;letter-spacing:-.02em;margin-bottom:8px}.tpbd{font-size:12px;line-height:1.65;color:var(--txt2)}.tpbd p{margin:0 0 12px}
 .tpa{display:flex;flex-wrap:wrap;gap:4px;margin-top:16px;padding-top:14px;border-top:1px solid var(--bdr)}
 .ab{padding:5px 8px;border-radius:8px;font-size:10px;font-weight:600;color:var(--txt3);display:flex;align-items:center;gap:4px;transition:all .15s;min-height:32px}.ab:hover{background:var(--bg2);color:var(--txt2)}.ab.liked{color:var(--grn)}.ab.disliked{color:var(--red)}.ab.bkd{color:#b45309}
 .rh{padding:14px 0 10px;font-size:11px;font-weight:700;color:var(--txt2)}.rc{padding:14px;background:var(--bg1);border:1px solid var(--bdr);border-radius:14px;margin-bottom:10px}.rct{display:flex;align-items:center;gap:8px;margin-bottom:8px}.rcu{font-size:11px;font-weight:600}.rctm{font-size:10px;color:var(--txt3)}.rced{font-size:9px;color:var(--txt3);font-style:italic}
@@ -1229,7 +1230,7 @@ export default function NairaClan(){
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:6,gap:8}}><strong style={{fontSize:14,lineHeight:1.3}}>{r.title}</strong><span className="ai-tag" style={{flexShrink:0}}>AI Seed</span></div>
               <div style={{fontSize:13,color:"var(--txt2)",lineHeight:1.6,marginBottom:8,maxHeight:120,overflow:"hidden",WebkitMaskImage:"linear-gradient(to bottom, black 70%, transparent 100%)"}}>{r.body}</div>
               {r.source&&r.source!==""&&<div style={{fontSize:11,marginBottom:10}}><span style={{color:"var(--txt3)"}}>Source: </span><a href={r.source} target="_blank" rel="noopener noreferrer" style={{color:"var(--grn)",fontWeight:600,textDecoration:"none",wordBreak:"break-all"}}>{r.source.length>60?r.source.slice(0,60)+"…":r.source}</a></div>}
-              <div style={{display:"flex",gap:8,alignItems:"center"}}><button className="bp" style={{fontSize:12,padding:"6px 14px"}} onClick={()=>{const isNat=aiSeedTarget==="National";const bot=isNat?MU[0]:getBot(aiSeedTarget);const bodyClean=(r.body||"").replace(/```json\s*/g,"").replace(/```/g,"").replace(/^\s*\{[\s\S]*?\}\s*$/,"").trim();const fullBody=r.source&&r.source!==""?bodyClean+"\n\nSource: "+r.source:bodyClean;const np={id:"p"+Date.now()+i,author:bot,forum:isNat?"national":"state",state:isNat?null:aiSeedTarget,lga:null,category:"News",tag:"News",title:r.title,body:fullBody,poll:null,image:null,likes:0,dislikes:0,replies:0,views:0,time:"just now",ts:Date.now(),isBreaking:false,isHot:false,_edited:false,promotedTo:[]};setPosts(p=>[np,...p]);logAction("AI seed post",`"${r.title}" → ${aiSeedTarget} (as @${bot.username})`);const newResults=aiResults.filter((_,j)=>j!==i);setAiResults(newResults);saveAiCache(aiSeedTarget,aiHeadlines,newResults)}}>Publish to {aiSeedTarget} Forum</button><button className="bg" style={{fontSize:11,padding:"6px 12px"}} onClick={()=>{const newResults=aiResults.filter((_,j)=>j!==i);setAiResults(newResults);saveAiCache(aiSeedTarget,aiHeadlines,newResults)}}>Discard</button></div>
+              <div style={{display:"flex",gap:8,alignItems:"center"}}><button className="bp" style={{fontSize:12,padding:"6px 14px"}} onClick={()=>{const isNat=aiSeedTarget==="National";const bot=isNat?MU[0]:getBot(aiSeedTarget);let bodyClean=(r.body||"").replace(/```json\s*/g,"").replace(/```/g,"").replace(/^\s*\{[\s\S]*?\}\s*$/,"").trim();if(!bodyClean.includes("<p>"))bodyClean=bodyClean.split(/\n\n+/).filter(p=>p.trim()).map(p=>"<p>"+p.trim()+"</p>").join("");const sourceHtml=r.source&&r.source!==""?`<p style="margin-top:16px;padding-top:12px;border-top:1px solid #e5e7eb;font-size:11px;color:#888;">Source: <a href="${r.source}" target="_blank" rel="noopener noreferrer" style="color:#059669;font-weight:600;">${r.source}</a></p>`:"";const fullBody=bodyClean+sourceHtml;const np={id:"p"+Date.now()+i,author:bot,forum:isNat?"national":"state",state:isNat?null:aiSeedTarget,lga:null,category:"News",tag:"News",title:r.title,body:fullBody,poll:null,image:null,likes:0,dislikes:0,replies:0,views:0,time:"just now",ts:Date.now(),isBreaking:false,isHot:false,_edited:false,promotedTo:[]};setPosts(p=>[np,...p]);logAction("AI seed post",`"${r.title}" → ${aiSeedTarget} (as @${bot.username})`);const newResults=aiResults.filter((_,j)=>j!==i);setAiResults(newResults);saveAiCache(aiSeedTarget,aiHeadlines,newResults)}}>Publish to {aiSeedTarget} Forum</button><button className="bg" style={{fontSize:11,padding:"6px 12px"}} onClick={()=>{const newResults=aiResults.filter((_,j)=>j!==i);setAiResults(newResults);saveAiCache(aiSeedTarget,aiHeadlines,newResults)}}>Discard</button></div>
             </div>)}</>}
           </div>
 
