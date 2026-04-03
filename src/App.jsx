@@ -151,9 +151,16 @@ const MR = {"p1":[
 ]};
 
 const MOCK_MSGS = [
-  {id:"m1",sender:MU[1],receiver:MU[0],subject:"Welcome to NairaClan!",body:"Hi ChiefAda, welcome aboard! Feel free to reach out if you need any help navigating the platform.",isRead:false,time:ta(now-86400000)},
-  {id:"m2",sender:MU[2],receiver:MU[0],subject:"Community Clean-Up Details",body:"Hey, just wanted to share the full schedule for the upcoming clean-up drive. We'll be starting from the market area.",isRead:true,time:ta(now-172800000)},
+  {id:"m1",sender:MU[1],receiver:MU[0],subject:"Welcome to NairaClan!",body:"Hi NairaBoss, glad to be here! Feel free to reach out if you need any help navigating the platform.",isRead:false,time:ta(now-86400000)},
+  {id:"m2",sender:MU[2],receiver:MU[0],subject:"Community Clean-Up Details",body:"Hey, just wanted to share the full schedule for the upcoming clean-up drive. We'll be starting from the market area.",isRead:false,time:ta(now-172800000)},
   {id:"m3",sender:MU[0],receiver:MU[1],subject:"Re: Moderation Question",body:"Thanks for clarifying the guidelines on political posts. I'll make sure to keep things factual.",isRead:true,time:ta(now-259200000)},
+  {id:"m4",sender:MU[0],receiver:MU[2],subject:"Kano State Report",body:"The water supply situation in Nassarawa has been flagged multiple times. Can you coordinate with local reps?",isRead:false,time:ta(now-120000000)},
+  {id:"m5",sender:MU[3],receiver:MU[1],subject:"Accountability Forum Idea",body:"I was thinking we could organize a monthly accountability forum for our LGA. Would you support this?",isRead:false,time:ta(now-150000000)},
+  {id:"m6",sender:MU[2],receiver:MU[1],subject:"Moderation Help Needed",body:"We have some posts in the Kano forum that need review. Can you take a look when you get a chance?",isRead:false,time:ta(now-200000000)},
+  {id:"m7",sender:MU[1],receiver:MU[2],subject:"Re: Kano Forum Posts",body:"I've reviewed them. Two were spam and have been flagged. The rest are fine.",isRead:true,time:ta(now-190000000)},
+  {id:"m8",sender:MU[0],receiver:MU[3],subject:"Welcome Admin Note",body:"Welcome to NairaClan! As admin, you have access to the dashboard. Let me know if you need a walkthrough.",isRead:false,time:ta(now-100000000)},
+  {id:"m9",sender:MU[4],receiver:MU[3],subject:"Lagos Events",body:"There's a town hall meeting next week at Ikeja LGA. Should we post about it on the forum?",isRead:false,time:ta(now-80000000)},
+  {id:"m10",sender:MU[3],receiver:MU[4],subject:"Re: Lagos Events",body:"Great idea! Go ahead and create a post under the Events category. I'll pin it if it gets traction.",isRead:true,time:ta(now-75000000)},
 ];
 
 const MOCK_NOTIFS = [
@@ -540,9 +547,9 @@ const CSS=`@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;
 .cg{display:flex;flex-wrap:wrap;gap:6px;padding:10px 0}.cc{padding:5px 10px;border-radius:8px;background:var(--bg2);font-size:10px;font-weight:600;color:var(--txt2);transition:all .2s;cursor:pointer}.cc:hover{background:var(--gd);color:var(--grn)}.cc.on{background:var(--gd);color:var(--grn);border:1px solid rgba(5,150,105,.25)}
 .ew{position:relative;padding:14px 0}.ev{overflow:hidden;border-radius:14px;border:1px solid var(--bdr)}.et{display:flex;transition:transform .5s cubic-bezier(.4,0,.2,1)}.es{min-width:100%;padding:20px;background:linear-gradient(135deg,var(--bg2) 0%,var(--bg3) 100%)}.es h3{font-size:12px;font-weight:700;margin-bottom:6px}.es p{font-size:11px;color:var(--txt2);line-height:1.55;margin-bottom:10px}.es .ec{font-size:11px;color:var(--grn);font-weight:600}
 .ed{display:flex;justify-content:center;gap:6px;margin-top:10px}.dot{width:6px;height:6px;border-radius:50%;background:var(--txt3);opacity:.35;transition:all .3s;cursor:pointer}.dot.on{opacity:1;background:var(--grn);width:18px;border-radius:3px}
-.pc{padding:14px;background:var(--bg1);border:1px solid var(--bdr);border-radius:14px;cursor:pointer;transition:background .15s;display:flex;gap:12px;align-items:flex-start;margin-bottom:10px}.pc:active{background:var(--bg2)}.pcb{flex:1;min-width:0}.pcm{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:4px}.pcu{font-size:11px;font-weight:600}.pcr{font-size:10px}.pctm{font-size:10px;color:var(--txt3);margin-left:auto}.pctg{display:inline-flex;padding:2px 8px;border-radius:6px;font-size:9px;font-weight:700}.brk{background:rgba(220,38,38,.15);color:#ef4444}.hot{background:rgba(234,88,12,.12);color:#f97316}
-.pct{font-size:13px;font-weight:700;line-height:1.35;letter-spacing:-.01em;margin-bottom:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.pcp{font-size:11px;color:var(--txt3);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pc{padding:12px;background:var(--bg1);border:1px solid var(--bdr);border-radius:12px;cursor:pointer;transition:background .15s;display:flex;gap:10px;align-items:flex-start;margin-bottom:8px}.pc:active{background:var(--bg2)}.pcb{flex:1;min-width:0}.pcm{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:4px}.pcu{font-size:11px;font-weight:600}.pcr{font-size:10px}.pctm{font-size:10px;color:var(--txt3);margin-left:auto}.pctg{display:inline-flex;padding:2px 8px;border-radius:6px;font-size:9px;font-weight:700}.brk{background:rgba(220,38,38,.15);color:#ef4444}.hot{background:rgba(234,88,12,.12);color:#f97316}
+.pct{font-size:12px;font-weight:700;line-height:1.35;letter-spacing:-.01em;margin-bottom:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pcp{font-size:10px;color:var(--txt3);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 
 .pcf{display:flex;align-items:center;gap:14px;margin-top:6px;font-size:11px;color:var(--txt3)}.pcf span{display:flex;align-items:center;gap:4px}.pcch{color:var(--txt3);font-size:14px;flex-shrink:0;align-self:center;margin-left:4px}
 .tb{display:flex;align-items:center;gap:6px;padding:12px 0;font-size:12px;font-weight:600;color:var(--txt2);cursor:pointer;min-height:44px}.tb:hover{color:var(--grn)}
@@ -664,7 +671,7 @@ function RB({role}){return (role&&role!=="member")?<span className="pcr" title={
 function TP({tag,isB,isH}){if(isB)return <span className="pctg brk">BREAKING</span>;if(isH)return <span className="pctg hot">HOT</span>;if(!tag)return null;const h=TAG_HUE[tag]??150;return <span className="pctg" style={{background:`hsla(${h},60%,50%,.12)`,color:`hsl(${h},55%,55%)`}}>{tag}</span>}
 
 function PostCard({post,onClick}){const bp=stripHtml(post.body);return (
-  <div className="pc" onClick={onClick}><Av name={post.author.username} size={36} src={post.author.avatar}/><div className="pcb"><div className="pcm"><span className="pcu">{post.author.username}</span><RB role={post.author.role}/><TP tag={post.tag} isB={post.isBreaking} isH={post.isHot}/>{(post.promotedTo||[]).length>0&&<span className="promo-badge">⬆</span>}<span className="pctm">{post.time}</span></div><div className="pct">{post.title}</div><div className="pcp">{bp.slice(0,120)}{bp.length>120?"…":""}</div></div><span className="pcch">›</span></div>
+  <div className="pc" onClick={onClick}><Av name={post.author.username} size={30} src={post.author.avatar}/><div className="pcb"><div className="pcm"><span className="pcu">{post.author.username}</span><RB role={post.author.role}/><TP tag={post.tag} isB={post.isBreaking} isH={post.isHot}/>{(post.promotedTo||[]).length>0&&<span className="promo-badge">⬆</span>}<span className="pctm">{post.time}</span></div><div className="pct">{post.title}</div><div className="pcp">{bp.slice(0,120)}{bp.length>120?"…":""}</div></div><span className="pcch">›</span></div>
 )}
 
 function EduC({level}){const all=CIVIC[level]||CIVIC.national;const s=useMemo(()=>dailyShuffle(all,6),[level]);const[i,setI]=useState(0);const ref=useRef(null);
@@ -836,8 +843,8 @@ export default function NairaClan(){
   useEffect(()=>{const fav=document.querySelector("link[rel='icon']")||document.createElement("link");fav.rel="icon";fav.type="image/svg+xml";fav.href="data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32"><rect width="32" height="32" rx="7" fill="#1B4332"/><path d="M 8 26 A 8 8 0 0 1 24 26" fill="none" stroke="#F2EDE0" stroke-width="3" stroke-linecap="round"/><path d="M 4 26 A 12 12 0 0 1 28 26" fill="none" stroke="#F2EDE0" stroke-width="3" stroke-linecap="round" stroke-opacity="0.5"/><circle cx="16" cy="26" r="2.2" fill="#C9850A"/></svg>');document.head.appendChild(fav)},[]);
 
   // Browser history support — phone back button navigates within app
-  const go=useCallback((v,x={})=>{setView(v);setVx(x);setACat(null);setSdOpen(false);setNdOpen(false);window.scrollTo(0,0);try{window.history.pushState({view:v,vx:x},"")}catch(e){}},[]);
-  useEffect(()=>{window.history.replaceState({view:"home",vx:{}},"");const onPop=(e)=>{const s=e.state;if(s&&s.view){setView(s.view);setVx(s.vx||{});setACat(null);setSdOpen(false);setNdOpen(false);window.scrollTo(0,0)}else{setView("home");setVx({})}};window.addEventListener("popstate",onPop);return()=>window.removeEventListener("popstate",onPop)},[])
+  const go=useCallback((v,x={})=>{setView(v);setVx(x);setACat(null);setSdOpen(false);setNdOpen(false);window.scrollTo(0,0);try{if(v==="home"){window.history.replaceState({view:"home",vx:{}},"")}else{window.history.pushState({view:v,vx:x},"")}}catch(e){}},[]);
+  useEffect(()=>{window.history.replaceState({view:"home",vx:{}},"");const onPop=(e)=>{const s=e.state;if(s&&s.view&&s.view!=="home"){setView(s.view);setVx(s.vx||{});setACat(null);setSdOpen(false);setNdOpen(false);window.scrollTo(0,0)}else{setView("home");setVx({});window.history.replaceState({view:"home",vx:{}},"");window.history.pushState({view:"home",vx:{}},"")}};window.addEventListener("popstate",onPop);return()=>window.removeEventListener("popstate",onPop)},[])
   const isIn=!!user;
 
   const feed=useMemo(()=>{let fp=posts;
