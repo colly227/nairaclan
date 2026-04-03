@@ -403,6 +403,18 @@ function nMod(t,c){if(!t)return{ok:true};for(const r of EH)if(r.test(t))return{o
 
 /* ═══════════════════════════════════════════ AI HELPERS ═══════════════════════════════════════════ */
 const AI_PROXY = SUPABASE_URL + "/functions/v1/ai-proxy";
+function extractJSON(text){
+  if(!text)return null;
+  const clean=text.replace(/```json\s*/g,"").replace(/```/g,"").trim();
+  try{return JSON.parse(clean)}catch(e){}
+  // Try finding JSON array in text
+  const aStart=clean.indexOf("[");const aEnd=clean.lastIndexOf("]");
+  if(aStart!==-1&&aEnd>aStart){try{return JSON.parse(clean.slice(aStart,aEnd+1))}catch(e){}}
+  // Try finding JSON object in text
+  const oStart=clean.indexOf("{");const oEnd=clean.lastIndexOf("}");
+  if(oStart!==-1&&oEnd>oStart){try{return JSON.parse(clean.slice(oStart,oEnd+1))}catch(e){}}
+  return null;
+}
 const IS_ARTIFACT = typeof window !== "undefined" && window.location?.hostname?.includes("claude.ai");
 
 async function aiCall(systemPrompt, userPrompt, useSearch = false, maxTokens = 1000) {
@@ -1183,7 +1195,7 @@ export default function NairaClan(){
           <div className="ai-box"><h3>📰 AI Post Seeding</h3><p style={{fontSize:12,color:"var(--txt3)",marginBottom:12}}>Step 1: Fetch today's headlines. Step 2: Select a headline and AI writes the full article. Only News category. Access: Super Admin + Admin only.</p>
             <div className="fld"><label>Target Forum</label><select value={aiSeedTarget} onChange={e=>{setAiSeedTarget(e.target.value);setAiHeadlines([]);setAiResults([]);setAiState("")}}><option value="National">🇳🇬 National</option>{ALL_STATES.map(s=><option key={s} value={s}>🏛️ {s}</option>)}</select></div>
 
-            <button className="bp" style={{fontSize:13,width:"100%"}} disabled={aiLoading} onClick={async()=>{setAiLoading(true);setAiState("Searching for today's headlines…");setAiHeadlines([]);setAiResults([]);const r=await aiFetchHeadlines(aiSeedTarget);setAiLoading(false);if(!r.ok){setAiState("Error: "+r.text);return}try{const clean=r.text.replace(/```json\s*/g,"").replace(/```/g,"").trim();const arr=JSON.parse(clean);setAiHeadlines(arr);setAiState(`Found ${arr.length} headlines for ${aiSeedTarget}`)}catch(e){setAiState("Could not parse headlines. Try again.");setAiHeadlines([])}}}>
+            <button className="bp" style={{fontSize:13,width:"100%"}} disabled={aiLoading} onClick={async()=>{setAiLoading(true);setAiState("Searching for today's headlines…");setAiHeadlines([]);setAiResults([]);const r=await aiFetchHeadlines(aiSeedTarget);setAiLoading(false);if(!r.ok){setAiState("Error: "+r.text);return}const arr=extractJSON(r.text);if(arr&&Array.isArray(arr)&&arr.length>0){setAiHeadlines(arr);setAiState(`Found ${arr.length} headlines for ${aiSeedTarget}`)}else{setAiState("Could not parse headlines. Raw: "+r.text.slice(0,150)+"…");setAiHeadlines([])}}}>
               {aiLoading&&aiHeadlines.length===0?<span className="ai-gen"><span className="ai-spin"/>Fetching Headlines…</span>:"🔍 Fetch Today's Headlines"}</button>
 
             {aiState&&<div className={`ai-status ${aiLoading?"ai-loading":aiHeadlines.length>0||aiResults.length>0?"ai-ok":"ai-err"}`}>{aiState}</div>}
@@ -1191,7 +1203,7 @@ export default function NairaClan(){
             {aiHeadlines.length>0&&<><div style={{fontSize:13,fontWeight:700,marginTop:14,marginBottom:8}}>📋 Select a headline to write:</div>
             {aiHeadlines.map((h,i)=><div key={i} style={{background:"var(--bg2)",borderRadius:10,padding:12,marginBottom:8,display:"flex",gap:10,alignItems:"flex-start"}}>
               <div style={{flex:1,minWidth:0}}><div style={{fontSize:13,fontWeight:600,lineHeight:1.4}}>{h.title}</div>{h.summary&&<div style={{fontSize:11,color:"var(--txt3)",marginTop:4}}>{h.summary}</div>}{h.source&&h.source!==""&&<div style={{fontSize:10,color:"var(--grn)",marginTop:2,wordBreak:"break-all"}}>{h.source.slice(0,60)}</div>}</div>
-              <button className="bp" style={{fontSize:11,padding:"6px 12px",flexShrink:0}} disabled={aiLoading} onClick={async()=>{setAiLoading(true);setAiState(`Writing article: "${h.title.slice(0,40)}…"`);const r=await aiWriteArticle(h,aiSeedTarget);setAiLoading(false);if(!r.ok){setAiState("Error writing article: "+r.text);return}try{const clean=r.text.replace(/```json\s*/g,"").replace(/```/g,"").trim();const art=JSON.parse(clean);setAiResults(ar=>[...ar,art]);setAiHeadlines(hs=>hs.filter((_,j)=>j!==i));setAiState(`Article ready for review`)}catch(e){setAiState("Could not parse article. Try again.")}}}>
+              <button className="bp" style={{fontSize:11,padding:"6px 12px",flexShrink:0}} disabled={aiLoading} onClick={async()=>{setAiLoading(true);setAiState(`Writing article: "${h.title.slice(0,40)}…"`);const r=await aiWriteArticle(h,aiSeedTarget);setAiLoading(false);if(!r.ok){setAiState("Error writing article: "+r.text);return}const art=extractJSON(r.text);if(art&&art.title&&art.body){setAiResults(ar=>[...ar,art]);setAiHeadlines(hs=>hs.filter((_,j)=>j!==i));setAiState("Article ready for review")}else{setAiState("Could not parse article. Raw: "+r.text.slice(0,150)+"…")}}}>
                 {aiLoading?<span className="ai-spin"/>:"✍️ Write"}</button>
             </div>)}</>}
 
