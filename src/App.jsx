@@ -403,12 +403,12 @@ function nMod(t,c){if(!t)return{ok:true};for(const r of EH)if(r.test(t))return{o
 
 /* ═══════════════════════════════════════════ AI HELPERS ═══════════════════════════════════════════ */
 const AI_PROXY = SUPABASE_URL + "/functions/v1/ai-proxy";
+const IS_ARTIFACT = typeof window !== "undefined" && window.location?.hostname?.includes("claude.ai");
 
 async function aiCall(systemPrompt, userPrompt, useSearch = false, maxTokens = 1000) {
   try {
-    // In artifact preview: call Anthropic directly (built-in auth)
-    // In production: route through Supabase Edge Function (API key stored as secret)
-    if (USE_MOCK) {
+    if (IS_ARTIFACT) {
+      // In Claude artifact preview: call Anthropic directly (built-in auth)
       const body = { model: "claude-haiku-4-5-20251001", max_tokens: maxTokens, system: systemPrompt, messages: [{ role: "user", content: userPrompt }] };
       if (useSearch) body.tools = [{ type: "web_search_20250305", name: "web_search" }];
       const res = await fetch("https://api.anthropic.com/v1/messages", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
@@ -416,6 +416,7 @@ async function aiCall(systemPrompt, userPrompt, useSearch = false, maxTokens = 1
       const text = (data.content || []).filter(b => b.type === "text").map(b => b.text).join("\n").trim();
       return { ok: true, text };
     } else {
+      // On deployed site: route through Supabase Edge Function (API key stored as secret)
       const res = await fetch(AI_PROXY, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": "Bearer " + SUPABASE_ANON },
